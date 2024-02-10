@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, Response
+from app.services import deploying_api
 from celery import chain
-from app import db, client
+from app import db, client, assistant
 chatbot = Blueprint("chatbot", __name__)
 
 
@@ -22,9 +23,50 @@ def create_thread():
     meta_thread = {
         'id': thread.id,
         'created_at': thread.created_at,
+        'messages': []
     }
 
     print("DEBUG")
     print(thread)
     db.openai_threads.insert_one(meta_thread)
     return {'thread': thread.id}
+
+
+@chatbot.route("list_messages/<thread_id>")
+def list_messages(thread_id):
+    messages = client.beta.threads.messages.list(
+        thread_id=thread_id
+    )
+
+    # reversed_messages = 
+
+    
+@chatbot.route("new_message/<thread_id>/<query>")
+def new_message(thread_id, query):
+    message = client.beta.threads.messages.create(
+        thread_id=thread_id,
+        role = 'user',
+        content = query
+    )
+
+    messages_now = db.openai_threads.find_one({'id': thread_id})['messages']
+    messages_now.append({'role': 'user', 'content': query})
+
+    run = client.beta.threads.runcreate(
+        thread_id=thread_id,
+        assistant_id=assistant.id
+    )
+
+    thread = client.beta.threads.retrieve(thread_id)
+    ai_reply = deploying_api.wait_on_run(run, thread)
+
+    messages = client.beta.threads.messages.list(
+        thread_id=thread_id
+    )
+    
+    new_message = messages[0]
+    messages_now.append({'role': new_message.role, 'content': new_message.content[0].text.value})
+
+    return {
+        'reply': new_message.content[0]
+    }
