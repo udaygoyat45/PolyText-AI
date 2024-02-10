@@ -1,0 +1,15 @@
+NextJS - frontend
+Flask - backend
+
+OpenAI API - uploading text
+We will add support for
+- Text
+- Images (from camera)
+- PDFs
+- Powerpoint
+- Audio (transcribed to text)
+- URL (web scraping)
+
+Look into archectype AI
+
+openai_key=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
