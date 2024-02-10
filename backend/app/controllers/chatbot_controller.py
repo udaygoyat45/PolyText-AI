@@ -38,7 +38,9 @@ def list_messages(thread_id):
         thread_id=thread_id
     )
 
-    # reversed_messages = 
+    reversed_messages = reversed(messages.data)
+    parsed_messages = [{'role': a.role, 'content': a.content[0].text.value} for a in reversed_messages]
+    return {'messages': parsed_messages}
 
     
 @chatbot.route("new_message/<thread_id>/<query>")
@@ -52,7 +54,7 @@ def new_message(thread_id, query):
     messages_now = db.openai_threads.find_one({'id': thread_id})['messages']
     messages_now.append({'role': 'user', 'content': query})
 
-    run = client.beta.threads.runcreate(
+    run = client.beta.threads.runs.create(
         thread_id=thread_id,
         assistant_id=assistant.id
     )
@@ -64,9 +66,11 @@ def new_message(thread_id, query):
         thread_id=thread_id
     )
     
-    new_message = messages[0]
+    new_message = messages.data[0]
     messages_now.append({'role': new_message.role, 'content': new_message.content[0].text.value})
 
+    db.openai_threads.update_one({'id': thread_id}, {'$set': {'messages': messages_now}})
+
     return {
-        'reply': new_message.content[0]
+        'reply': new_message.content[0].text.value
     }
