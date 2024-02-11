@@ -9,7 +9,8 @@ class DevelopmentConfig():
     HOST = "0.0.0.0"
     DEBUG = True
     PORT = 4000
-    MONGODB_DATABASE_URI = 'mongodb://localhost:27017'
+    # MONGODB_DATABASE_URI = 'mongodb://localhost:27017'
+    MONGODB_DATABASE_URI = 'mongodb+srv://udaygoyat:polytextai@cluster0.8zudahs.mongodb.net/?retryWrites=true&w=majority'
     UPLOAD_FOLDER = './data/media/'
     REDIS_DATABASE_URI = 'redis://localhost'
     CELERY = dict(

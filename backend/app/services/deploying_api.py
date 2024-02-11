@@ -37,6 +37,7 @@ def understand_media(file_id):
     media = db.media_sources.find_one({'id': file_id}) 
 
     if media['type'] == 'video/mp4':
+        logger.info("converting video to audio")
         video = VideoFileClip(media['location'])
         audio_file_location = media['location'][:-4] + '.mp3'
         video.audio.write_audiofile(audio_file_location)

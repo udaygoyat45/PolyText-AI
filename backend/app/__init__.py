@@ -22,7 +22,7 @@ celery_app = celery_init_app(app)
 celery_app.set_default()
 
 
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="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")
 
 
 
@@ -33,7 +33,7 @@ if len(assistant_list) > 0:
 else:
     assistant = client.beta.assistants.create(
         name="PolyText AI",
-        instructions="You are an expert in understanding any media file. When user asks a question, find the right file and answer the question accurately. Try to keep ",
+        instructions="You are an expert in understanding any media file. When user asks a question, find the right file and answer the question accurately. Try to keep it short. ",
         model="gpt-4-1106-preview",
         tools = [{"type": 'retrieval'}]
     )

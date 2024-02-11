@@ -4,6 +4,7 @@ from celery import chain
 from app.services import scraper, deploying_api
 from app import client, assistant
 import bson
+import time
 from app import config, db
 import os
 
@@ -23,7 +24,8 @@ def check_format(format):
         'application-vnd.openxmlformats-officedocument.wordprocessingml.document',
         'text-plain',
         'audio-mpeg',
-        'video-mp4'
+        'video-mp4',
+        'text-html'
         ]
 
     format = format.lower()
