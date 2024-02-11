@@ -22,7 +22,7 @@ celery_app = celery_init_app(app)
 celery_app.set_default()
 
 
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="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")
 
 
 
