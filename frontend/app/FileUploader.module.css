@@ -1,0 +1,44 @@
+.fileUploader {
+    width: 33%;
+    float: left;
+    padding: 20px;
+    background-color: #f0f0f0; /* Light gray background */
+    border-radius: 10px; /* Rounded corners */
+    height: 100vh; /* Fill available screen height */
+  }
+  
+  .fileInputLabel {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .fileInput {
+    display: none;
+  }
+  
+  .plusButton {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background-color: #007bff; /* Blue button color */
+    color: #fff;
+    border-radius: 50%; /* Circular shape */
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  .uploadButton {
+    background-color: #28a745; /* Green button color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .selectedFile {
+    margin-top: 20px;
+  }
+  
