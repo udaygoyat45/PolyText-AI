@@ -5,7 +5,10 @@ from pptx import Presentation
 import fitz
 from PIL import Image
 from celery import shared_task
+from celery.utils.log import get_task_logger
 import io
+
+logger = get_task_logger(__name__)
 
 def extract_text_from_pptx(pptx_path):
     presentation = Presentation(pptx_path)

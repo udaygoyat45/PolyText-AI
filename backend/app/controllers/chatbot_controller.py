@@ -43,34 +43,39 @@ def list_messages(thread_id):
     return {'messages': parsed_messages}
 
     
-@chatbot.route("new_message/<thread_id>/<query>")
-def new_message(thread_id, query):
-    message = client.beta.threads.messages.create(
-        thread_id=thread_id,
-        role = 'user',
-        content = query
-    )
+@chatbot.route("new_message/", methods=['GET', 'POST'])
+def new_message():
+    if request.method == 'POST':
+        queryData = request.get_json()
+        thread_id = queryData['thread_id']
+        query = queryData['message']
 
-    messages_now = db.openai_threads.find_one({'id': thread_id})['messages']
-    messages_now.append({'role': 'user', 'content': query})
+        message = client.beta.threads.messages.create(
+            thread_id=thread_id,
+            role = 'user',
+            content = query
+        )
 
-    run = client.beta.threads.runs.create(
-        thread_id=thread_id,
-        assistant_id=assistant.id
-    )
+        messages_now = db.openai_threads.find_one({'id': thread_id})['messages']
+        messages_now.append({'role': 'user', 'content': query})
 
-    thread = client.beta.threads.retrieve(thread_id)
-    ai_reply = deploying_api.wait_on_run(run, thread)
+        run = client.beta.threads.runs.create(
+            thread_id=thread_id,
+            assistant_id=assistant.id
+        )
 
-    messages = client.beta.threads.messages.list(
-        thread_id=thread_id
-    )
-    
-    new_message = messages.data[0]
-    messages_now.append({'role': new_message.role, 'content': new_message.content[0].text.value})
+        thread = client.beta.threads.retrieve(thread_id)
+        ai_reply = deploying_api.wait_on_run(run, thread)
 
-    db.openai_threads.update_one({'id': thread_id}, {'$set': {'messages': messages_now}})
+        messages = client.beta.threads.messages.list(
+            thread_id=thread_id
+        )
+        
+        new_message = messages.data[0]
+        messages_now.append({'role': new_message.role, 'content': new_message.content[0].text.value})
 
-    return {
-        'reply': new_message.content[0].text.value
-    }
+        db.openai_threads.update_one({'id': thread_id}, {'$set': {'messages': messages_now}})
+
+        return {
+            'reply': new_message.content[0].text.value
+        }

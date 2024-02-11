@@ -14,3 +14,4 @@ redis
 Flask-SocketIO
 openai
 python-pptx
+moviepy

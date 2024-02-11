@@ -22,12 +22,21 @@ celery_app = celery_init_app(app)
 celery_app.set_default()
 
 
-client = OpenAI(api_key="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")
-assistant = client.beta.assistants.create(
-    name="PolyText AI",
-    instructions="You are an expert in understanding any media file. When user asks a question, find the right file and answer the question accurately. Try to keep ",
-    model="gpt-4-1106-preview"
-)
+client = OpenAI(api_key="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")
+
+
+
+assistant_list = list(client.beta.assistants.list())
+
+if len(assistant_list) > 0:
+    assistant = client.beta.assistants.retrieve(assistant_list[0].id)
+else:
+    assistant = client.beta.assistants.create(
+        name="PolyText AI",
+        instructions="You are an expert in understanding any media file. When user asks a question, find the right file and answer the question accurately. Try to keep ",
+        model="gpt-4-1106-preview",
+        tools = [{"type": 'retrieval'}]
+    )
 
 
 from app.controllers.socket_controller import *
